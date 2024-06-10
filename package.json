@@ -10,7 +10,9 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest"
+    "test": "jest",
+    "predeploy":"npm run build",
+    "deploy":"git add . && git commit -m 'Deploy' && git push"
   },
   "keywords": [],
   "author": "",

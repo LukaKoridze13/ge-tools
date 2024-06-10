@@ -1,3 +1,11 @@
-declare function add(a: number, b: number): number;
+interface TodayProps {
+    shorten?: number;
+}
+declare function today({ shorten }?: TodayProps): string;
 
-export { add };
+interface CurrentMonthProps {
+    shorten?: number;
+}
+declare function currentMonth({ shorten }?: CurrentMonthProps): string;
+
+export { currentMonth, today };
