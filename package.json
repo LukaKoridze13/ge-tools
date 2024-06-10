@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsup",
     "test": "jest",
-    "predeploy":"npm run build",
+    "predeploy":"npm run test && npm run build",
     "deploy":"git add . && git commit -m 'Deploy' && git push"
   },
   "keywords": [],
