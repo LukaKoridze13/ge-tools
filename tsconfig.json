@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "target": "ES2017",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"]
+}
