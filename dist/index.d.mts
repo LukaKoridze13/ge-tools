@@ -1,11 +1,19 @@
 interface TodayProps {
     shorten?: number;
+    date?: Date;
 }
-declare function today({ shorten }?: TodayProps): string;
+declare function today({ shorten, date }?: TodayProps): string;
 
 interface CurrentMonthProps {
     shorten?: number;
+    date?: Date;
 }
-declare function currentMonth({ shorten }?: CurrentMonthProps): string;
+declare function currentMonth({ shorten, date }?: CurrentMonthProps): string;
 
-export { currentMonth, today };
+interface FormatDateProps {
+    date?: Date;
+    format: string;
+}
+declare function formatDate({ date, format }: FormatDateProps): string;
+
+export { currentMonth, formatDate, today };

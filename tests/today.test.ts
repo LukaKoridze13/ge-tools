@@ -76,11 +76,45 @@ describe("today function", () => {
 
   // Test for negative shorten values
   it("should throw error for invalid shorten value", () => {
-    expect(() => today({ shorten: -1 })).toThrow("Invalid shorten property");
+    expect(() => today({ shorten: -1 })).toThrow("The 'shorten' property must be a positive integer");
   });
 
   // Test for valid shorten value of 0
   it("should throw error for shorten 0", () => {
-    expect(() => today({ shorten: 0 })).toThrow("Invalid shorten property");
+    expect(() => today({ shorten: 0 })).toThrow("The 'shorten' property must be a positive integer");
+  });
+
+  // Test passing a specific date directly
+  it('should return "ხუთშაბათი" for a specific date 2024-02-29', () => {
+    expect(today({ date: new Date("2024-02-29") })).toBe("ხუთშაბათი");
+  });
+
+  it('should return "ოთხშაბათი" for a specific date 2024-06-12', () => {
+    expect(today({ date: new Date("2024-06-12") })).toBe("ოთხშაბათი");
+  });
+
+  // Test passing a specific date with shorten
+  it('should return "ოთხ" for a specific date 2024-06-12 with shorten 3', () => {
+    expect(today({ date: new Date("2024-06-12"), shorten: 3 })).toBe("ოთხ");
+  });
+
+  it('should return "ხუთშ" for a specific date 2024-02-29 with shorten 4', () => {
+    expect(today({ date: new Date("2024-02-29"), shorten: 4 })).toBe("ხუთშ");
+  });
+
+  // Test with invalid date
+  it("should throw error for invalid date", () => {
+    expect(() => today({ date: new Date("invalid-date") })).toThrow("Invalid date property");
+  });
+
+  // Test for edge cases on shorten
+  it("should return full day name when shorten is larger than name length", () => {
+    jest.setSystemTime(new Date("2024-06-10")); // Monday
+    expect(today({ shorten: 10 })).toBe("ორშაბათი");
+  });
+
+  it("should return full day name when shorten is equal to name length", () => {
+    jest.setSystemTime(new Date("2024-06-10")); // Monday
+    expect(today({ shorten: 8 })).toBe("ორშაბათი");
   });
 });

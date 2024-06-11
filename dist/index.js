@@ -21,6 +21,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var src_exports = {};
 __export(src_exports, {
   currentMonth: () => currentMonth,
+  formatDate: () => formatDate,
   today: () => today
 });
 module.exports = __toCommonJS(src_exports);
@@ -30,12 +31,15 @@ var days = ["\u10DD\u10E0\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10E1\u10D0\u1
 var days_default = days;
 
 // src/date/today.ts
-function today({ shorten } = {}) {
-  const currentDayIndex = (/* @__PURE__ */ new Date()).getDay();
+function today({ shorten, date = /* @__PURE__ */ new Date() } = {}) {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    throw new Error("Invalid date property");
+  }
+  const currentDayIndex = date.getDay();
   const adjustedIndex = (currentDayIndex + 6) % 7;
   let result = days_default[adjustedIndex];
-  if (typeof shorten !== "undefined" && shorten <= 0) {
-    throw new Error("Invalid shorten property");
+  if (typeof shorten !== "undefined" && (!Number.isInteger(shorten) || shorten <= 0)) {
+    throw new Error("The 'shorten' property must be a positive integer");
   }
   if (shorten) {
     result = result.slice(0, shorten);
@@ -48,20 +52,58 @@ var months = ["\u10D8\u10D0\u10DC\u10D5\u10D0\u10E0\u10D8", "\u10D7\u10D4\u10D1\
 var months_default = months;
 
 // src/date/currentMonth.ts
-function currentMonth({ shorten } = {}) {
-  const currentMonthIndex = (/* @__PURE__ */ new Date()).getMonth();
+function currentMonth({ shorten, date = /* @__PURE__ */ new Date() } = {}) {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    throw new Error("Invalid date property");
+  }
+  const currentMonthIndex = date.getMonth();
   let result = months_default[currentMonthIndex];
-  if (typeof shorten !== "undefined" && shorten <= 0) {
-    throw new Error("Invalid shorten property");
+  if (typeof shorten !== "undefined" && (!Number.isInteger(shorten) || shorten <= 0)) {
+    throw new Error("The 'shorten' property must be a positive integer");
   }
   if (shorten) {
     result = result.slice(0, shorten);
   }
   return result;
 }
+
+// src/date/formatDate.ts
+function formatDate({ date = /* @__PURE__ */ new Date(), format }) {
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date property");
+  }
+  const dayName = days_default[(date.getDay() + 6) % 7];
+  const dayNumber = date.getDate();
+  const monthName = months_default[date.getMonth()];
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const replacements = {
+    \u10EC\u10DB: seconds,
+    \u10EC\u10D7: minutes,
+    \u10E1\u10D7: hours,
+    \u10D3\u10E6\u10D4: dayName,
+    \u10E0\u10D8\u10EA\u10EE\u10D5\u10D8: dayNumber,
+    \u10D7\u10D5\u10D4: monthName,
+    \u10EC\u10D4\u10DA\u10D8: year
+  };
+  return format.replace(/__([a-zA-Zა-ჰ]+)(\d+)?(_)?/g, (match, p1, p2, p3) => {
+    const value = String(replacements[p1]);
+    if (!p2) return value;
+    const n = parseInt(p2, 10);
+    if (isNaN(n)) return value;
+    if (p3) {
+      return value.slice(-n);
+    } else {
+      return value.slice(0, n);
+    }
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   currentMonth,
+  formatDate,
   today
 });
 //# sourceMappingURL=index.js.map
